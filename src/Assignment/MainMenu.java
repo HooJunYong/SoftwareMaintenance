@@ -8,7 +8,16 @@ package Assignment;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import Assignment.Product;
+import Assignment.Model.Product;
+import Assignment.Model.Cart;
+import Assignment.Model.CartItem;
+import Assignment.Model.Member;
+import Assignment.Model.Payment;
+import Assignment.Model.Cash;
+import Assignment.Model.Card;
+import Assignment.Model.Person;
+import Assignment.Model.Receipt;
+
 
 /**
  * ^
@@ -20,7 +29,7 @@ public class MainMenu {
     private static String userRole;
     private static String cashierID;
 
-    public static void main(String[] agrs) {
+    public static void main(String[] agrs)
         StaffManagement staff = new StaffManagement();
         staff.DisplayLogo();
         staff.Login();
@@ -153,7 +162,7 @@ public class MainMenu {
         Scanner sc = new Scanner(System.in);
         MemberManagement memberManage = new MemberManagement();
         ArrayList<Person> personList = Person.read();
-        String filePath = "/Users/yutic/Documents/NetBeansProjects/DFT2(G1)-YuTickSang-IvanPekYuHeng-HooJunYong/person.txt";
+        String filePath = "/Users/yutic/Documents/SoftwareMaintenance/person.txt";
         do {
             System.out.println("");
             System.out.println("==============================");
@@ -208,7 +217,7 @@ public class MainMenu {
         StaffManagement manage = new StaffManagement();
         Scanner sc = new Scanner(System.in);
         ArrayList<Person> personList = Person.read();
-        String filePath = "/Users/yutic/Documents/NetBeansProjects/DFT2(G1)-YuTickSang-IvanPekYuHeng-HooJunYong/person.txt";
+        String filePath = "/Users/yutic/Documents/SoftwareMaintenance/person.txt";
         do {
             System.out.println("");
             System.out.println("==============================");

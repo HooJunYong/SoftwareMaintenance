@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Assignment;
+package Assignment.Model;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,14 +15,16 @@ import java.util.Scanner;
  *
  * @author User
  */
-abstract class Person {
+public class Person {
 
     String ID;
     String name;
     String email;
     String phoneNo;
 
-    abstract boolean validateID(String tempID);
+    public boolean validateID(String tempID) {
+        return false;
+    }
 
     public Person() {
 
@@ -96,93 +98,7 @@ abstract class Person {
         return isValid;
     }
 
-    public static ArrayList<Person> read() {
-        ArrayList<Person> data = new ArrayList<>();
-        try {
-            File staffFile = new File("/Users/yutic/Documents/NetBeansProjects/DFT2(G1)-YuTickSang-IvanPekYuHeng-HooJunYong/person.txt");
-            Scanner sc = new Scanner(staffFile);
-            Staff staff;
-            while (sc.hasNextLine()) {
-                String[] text = sc.nextLine().split("\\,");
-                if (text[0].indexOf("M") != -1) {
-                    data.add(new Member(text[0], text[1], text[2], text[3]));
-                } else if (text[0].indexOf("S") != -1) {
-                    data.add(new Staff(text[0], text[1], text[2], text[3], text[4]));
-                } else if (text[0].indexOf("A") != -1) {
-                    data.add(new Admin(text[0], text[1], text[2], text[3], text[4]));
-                }
-            }
-            sc.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("An error had occured");
-        }
-
-        if (data.get(0) instanceof Staff) {
-            Staff firstStaff = (Staff) data.get(0);
-        } else if (data.get(0) instanceof Member) {
-            Member fistMember = (Member) data.get(0);
-        } else {
-            Admin firstAdmin = (Admin) data.get(0);
-        }
-
-        return data;
-    }
-
-    public static void writeDataToFile(Person person, String filePath) {
-        ArrayList<Person> info = read(); // Read existing data
-        info.add(person); // Add the new person to the list
-
-        try {
-            File file = new File(filePath);
-            FileWriter fileWriter = new FileWriter(file, false); // Use false to overwrite the file
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-
-            for (Person p : info) {
-                // Check if it's a Staff or Member and format the data accordingly
-                if (p instanceof Staff) {
-                    // Staff and Admin have a password field
-                    printWriter.println(p.getID() + "," + ((Staff) p).getPassword() + "," + p.getName() + "," + p.getEmail() + "," + p.getPhoneNo());
-                } else if (p instanceof Admin) {
-                    printWriter.println(p.getID() + "," + ((Admin) p).getPassword() + "," + p.getName() + "," + p.getEmail() + "," + p.getPhoneNo());
-                } else if (p instanceof Member) {
-                    // Member does not have a password
-                    printWriter.println(p.getID() + "," + p.getName() + "," + p.getEmail() + "," + p.getPhoneNo());
-                }
-            }
-
-            printWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("An error had occurred");
-        }
-    }
-
-    public static void writeArray(ArrayList<Person> info, String filePath) {
-        try {
-            File file = new File(filePath);
-            FileWriter fileWriter = new FileWriter(file, false); // Use false to overwrite the file
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-
-            for (Person person : info) {
-                // Check if it's a Staff or Admin and format the data accordingly
-                if (person instanceof Staff) {
-                    // Staff and Admin have a password field
-                    printWriter.println(person.getID() + "," + ((Staff) person).getPassword() + "," + person.getName() + "," + person.getEmail() + "," + person.getPhoneNo());
-                } else if (person instanceof Admin) {
-                    printWriter.println(person.getID() + "," + ((Admin) person).getPassword() + "," + person.getName() + "," + person.getEmail() + "," + person.getPhoneNo());
-                } else if (person instanceof Member) {
-                    // Member does not have a password
-                    printWriter.println(person.getID() + "," + person.getName() + "," + person.getEmail() + "," + person.getPhoneNo());
-                }
-            }
-
-            printWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("An error had occurred");
-        }
-    }
+    
 
     public static String getNextID(String type) {
         try {

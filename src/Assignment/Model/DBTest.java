@@ -1,4 +1,4 @@
-package Assignment;
+package Assignment.Model;
 
 import java.sql.*;
 

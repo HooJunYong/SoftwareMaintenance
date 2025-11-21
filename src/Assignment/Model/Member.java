@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Assignment;
+package Assignment.Model;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -25,7 +25,7 @@ public class Member extends Person {
     }
 
     @Override
-    boolean validateID(String tempID) {
+    public boolean validateID(String tempID) {
         boolean valid = false;
         ArrayList<Person> data = Person.read();
 

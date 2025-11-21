@@ -7,7 +7,9 @@ package Assignment;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
-
+import Assignment.Model.Member;
+import Assignment.Model.Person;
+import Assignment.Model.Staff;
 /**
  *
  * @author User
