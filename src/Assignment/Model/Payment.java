@@ -19,7 +19,7 @@ public class Payment {
         this.discount = discount;
     }
    
-    public double calDiscount() {
+    public double calculateDiscount() {
         return cart.calculateSubtotal() * discount;
     }
 
@@ -31,12 +31,16 @@ public class Payment {
         this.paymentMethod = paymentMethod;
     }
     
-    public double calTaxRate() {
-        return cart.calculateSubtotal() * AppConfig.getTaxRate();
+    public double calculateTax() {
+        double afterDiscount = cart.calculateSubtotal() - calculateDiscount();
+        return afterDiscount * AppConfig.getTaxRate();
     }
    
-    public double calTotal() {
-        return cart.calculateSubtotal() - calDiscount() + calTaxRate();
+    public double calculateTotal() {
+        double subtotal = cart.calculateSubtotal();
+        double discountAmount = calculateDiscount();
+        double tax = calculateTax();
+        return subtotal - discountAmount + tax;
     }
     
     // Get tax rate for display purposes

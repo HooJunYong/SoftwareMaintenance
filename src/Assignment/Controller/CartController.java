@@ -67,8 +67,8 @@ public class CartController {
         }
 
         // Calculate max available stock
-        int dbStock = getProductStockFromDB(item.getCartProd().getProductID());
-        int otherCartQty = getQuantityInCartExcluding(item.getCartProd().getProductID(), selection - 1);
+        int dbStock = getProductStockFromDB(item.getProduct().getProductID());
+        int otherCartQty = getQuantityInCartExcluding(item.getProduct().getProductID(), selection - 1);
         int maxAvailable = dbStock - otherCartQty;
 
         int newQty = view.getNewQuantity(item.getQuantity(), maxAvailable);
@@ -93,7 +93,7 @@ public class CartController {
         }
 
         CartItem item = cart.getItem(selection - 1);
-        if (item != null && view.confirmAction("remove " + item.getCartProd().getProductName())) {
+        if (item != null && view.confirmAction("remove " + item.getProduct().getProductName())) {
             cart.removeItem(selection - 1);
             view.displaySuccess("Item removed from cart.");
         }
@@ -160,8 +160,8 @@ public class CartController {
     }
 
     private int getQuantityInCart(String productID) {
-        for (CartItem item : cart.getCartlist()) {
-            if (item.getCartProd().getProductID().equals(productID)) {
+        for (CartItem item : cart.getCartList()) {
+            if (item.getProduct().getProductID().equals(productID)) {
                 return item.getQuantity();
             }
         }
@@ -170,10 +170,10 @@ public class CartController {
 
     private int getQuantityInCartExcluding(String productID, int excludeIndex) {
         int total = 0;
-        for (int i = 0; i < cart.getCartlist().size(); i++) {
+        for (int i = 0; i < cart.getCartList().size(); i++) {
             if (i != excludeIndex) {
-                CartItem item = cart.getCartlist().get(i);
-                if (item.getCartProd().getProductID().equals(productID)) {
+                CartItem item = cart.getCartList().get(i);
+                if (item.getProduct().getProductID().equals(productID)) {
                     total += item.getQuantity();
                 }
             }

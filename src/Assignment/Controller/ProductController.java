@@ -19,10 +19,10 @@ public class ProductController {
         ArrayList<Product> productList = ProductDAO.readAll();
 
         // Adjust quantities based on what's in cart
-        if (cart != null && !cart.getCartlist().isEmpty()) {
+        if (cart != null && !cart.getCartList().isEmpty()) {
             for (Product dbProduct : productList) {
-                for (CartItem item : cart.getCartlist()) {
-                    if (dbProduct.getProductID().equals(item.getCartProd().getProductID())) {
+                for (CartItem item : cart.getCartList()) {
+                    if (dbProduct.getProductID().equals(item.getProduct().getProductID())) {
                         int currentDbQty = dbProduct.getQuantity();
                         int inCartQty = item.getQuantity();
                         int effectiveStock = currentDbQty - inCartQty;

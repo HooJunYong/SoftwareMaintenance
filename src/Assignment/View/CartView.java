@@ -27,7 +27,7 @@ public class CartView {
         System.out.println("============================================================================================");
 
         int index = 1;
-        for (CartItem item : cart.getCartlist()) {
+        for (CartItem item : cart.getCartList()) {
             System.out.printf("|%-4d %s|%n", index++, item.toString());
         }
 

@@ -9,14 +9,14 @@ public class Cart {
         this.cartList = new ArrayList<>();
     }
 
-    public ArrayList<CartItem> getCartlist() {
+    public ArrayList<CartItem> getCartList() {
         return cartList;
     }
 
     public void addItem(CartItem item) {
         // Check if product already exists in cart
         for (CartItem existingItem : cartList) {
-            if (existingItem.getCartProd().getProductID().equals(item.getCartProd().getProductID())) {
+            if (existingItem.getProduct().getProductID().equals(item.getProduct().getProductID())) {
                 // Update quantity instead of adding new item
                 existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());
                 return;
@@ -57,7 +57,7 @@ public class Cart {
         return subtotal;
     }
 
-    public int CalcTotalQty() {
+    public int calculateTotalQuantity() {
         int total = 0;
         for (CartItem item : cartList) {
             total += item.getQuantity();

@@ -1,20 +1,25 @@
 package Assignment.Model;
 
 public class CartItem {
-    private Product cartProd;
+    
+    
+    private Product product;
     private int quantity;
 
-    public CartItem(Product cartProd, int quantity) {
-        this.cartProd = cartProd;
+    public CartItem(Product product, int quantity) {
+        this.product = product;
         this.quantity = quantity;
     }
 
-    public Product getCartProd() {
-        return cartProd;
+    public CartItem() {
     }
 
-    public void setCartProd(Product cartProd) {
-        this.cartProd = cartProd;
+    public Product getProduct() {
+        return product;
+    }
+ 
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public int getQuantity() {
@@ -26,15 +31,15 @@ public class CartItem {
     }
 
     public double calculateItemTotal() {
-        return cartProd.getPrice() * quantity;
+        return product.getPrice() * quantity;
     }
 
     @Override
     public String toString() {
         return String.format("%-17s %-29s %-15.2f %-13d %-10.2f",
-                cartProd.getProductID(),
-                cartProd.getProductName(),
-                cartProd.getPrice(),
+                product.getProductID(),
+                product.getProductName(),
+                product.getPrice(),
                 quantity,
                 calculateItemTotal());
     }

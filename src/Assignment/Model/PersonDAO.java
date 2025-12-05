@@ -3,10 +3,6 @@ package Assignment.Model;
 
 import java.sql.*;
 import java.util.ArrayList;
-import Assignment.Model.Person;
-import Assignment.Model.Staff;
-import Assignment.Model.Admin;
-import Assignment.Model.Member;
 
 
 public class PersonDAO {

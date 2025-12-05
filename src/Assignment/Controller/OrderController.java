@@ -1,28 +1,66 @@
 package Assignment.Controller;
 
+import Assignment.MainMenu;
 import Assignment.Model.*;
-import Assignment.View.OrderView;
-import Assignment.View.ProductView; // Used to get quantity
-import Assignment.MainMenu; // To get User Role/Cashier ID
-import Assignment.Config.AppConfig;
+import Assignment.Service.InventoryService;
+import Assignment.Service.MemberService;
+import Assignment.Service.PaymentService;
 import Assignment.View.CartView;
+import Assignment.View.OrderView;
+import Assignment.View.ProductView;
 
 public class OrderController {
 
     private OrderView orderView;
     private CartController cartController;
-    private ProductController productController; // To select products
+    private ProductController productController;
     private ProductView productView;
-    private CartView cartView; // To ask for quantity
+    private CartView cartView;
     private Cart cart;
 
-    public OrderController() {
-        this.orderView = new OrderView();
-        this.cartController = new CartController();
-        this.productController = new ProductController();
-        this.productView = new ProductView();
-        this.cartView = new CartView();
+    // Services (Single Responsibility)
+    private MemberService memberService;
+    private PaymentService paymentService;
+    private InventoryService inventoryService;
+
+    public OrderController(
+            OrderView orderView,
+            CartController cartController,
+            ProductController productController,
+            ProductView productView,
+            CartView cartView,
+            MemberService memberService,
+            PaymentService paymentService,
+            InventoryService inventoryService) {
+
+        this.orderView = orderView;
+        this.cartController = cartController;
+        this.productController = productController;
+        this.productView = productView;
+        this.cartView = cartView;
         this.cart = cartController.getCart();
+
+        // Injected services (DIP)
+        this.memberService = memberService;
+        this.paymentService = paymentService;
+        this.inventoryService = inventoryService;
+    }
+
+    // Default constructor for backward compatibility
+    public OrderController() {
+        this(
+            new OrderView(),
+            new CartController(),
+            new ProductController(),
+            new ProductView(),
+            new CartView(),
+            null, null, null // Will be set below
+        );
+        
+        // Initialize with default implementations
+        this.memberService = new Assignment.Service.MemberService(this.orderView);
+        this.paymentService = new Assignment.Service.PaymentService(this.orderView);
+        this.inventoryService = new Assignment.Service.InventoryService();
     }
 
     public void startOrderProcess(boolean isAdmin) {
@@ -34,15 +72,13 @@ public class OrderController {
             switch (choice) {
                 case 1:
                     performProductSelectionLoop();
-
-                    // 2. If Cart is not empty after loop, automatically show Cart & Checkout prompt
-                    if (!cart.getCartlist().isEmpty()) {
+                    if (!cart.getCartList().isEmpty()) {
                         displayCartMenu(isAdmin);
                     }
                     break;
 
                 case 2:
-                    if (cart.getCartlist().isEmpty()) {
+                    if (cart.getCartList().isEmpty()) {
                         orderView.displayError("Cart is empty!");
                     } else {
                         displayCartMenu(isAdmin);
@@ -50,41 +86,34 @@ public class OrderController {
                     break;
 
                 case 3:
-                    ordering = false; // Exit
+                    ordering = false;
                     break;
+
                 default:
                     orderView.displayError("Invalid selection.");
             }
         }
 
-        // Return to main menu based on role
-        if (isAdmin)
-            MainMenu.AdminMenu();
-        else
-            MainMenu.StaffMenu();
+        navigateToMenu(isAdmin);
     }
 
     private void performProductSelectionLoop() {
         boolean adding = true;
         while (adding) {
-            // Use CartController to handle product selection and adding
             boolean added = cartController.addProductToCart();
 
             if (added) {
-                // Ask to add more
                 char choice = orderView.promptAddMore();
                 if (choice == 'N') {
                     adding = false;
                 }
             } else {
-                // User cancelled or no product selected
                 adding = false;
             }
         }
     }
 
     private void displayCartMenu(boolean isAdmin) {
-        // Use CartController to display cart
         cartController.displayCart();
 
         int choice = cartView.displayCartMenu();
@@ -92,15 +121,15 @@ public class OrderController {
         switch (choice) {
             case 1:
                 cartController.addProductToCart();
-                displayCartMenu(isAdmin); // Redisplay menu
+                displayCartMenu(isAdmin);
                 break;
             case 2:
                 cartController.editItemQuantity();
-                displayCartMenu(isAdmin); // Redisplay menu
+                displayCartMenu(isAdmin);
                 break;
             case 3:
                 cartController.removeItem();
-                displayCartMenu(isAdmin); // Redisplay menu
+                displayCartMenu(isAdmin);
                 break;
             case 4:
                 cartController.clearCart();
@@ -115,40 +144,7 @@ public class OrderController {
                 break;
             default:
                 orderView.displayError("Invalid selection.");
-                displayCartMenu(isAdmin); // Redisplay menu
-        }
-    }
-
-    private Member handleMemberLogin(Payment payment) {
-        while (true) {
-            int type = orderView.promptMemberType();
-
-            if (type == 2) {
-                // Non-member
-                Member nonMember = new Member();
-                nonMember.setID("-");
-                nonMember.setName("Walk-in Customer");
-                payment.setDiscount(0.00);
-                return nonMember;
-
-            } else if (type == 1) {
-                // Member
-                String id = orderView.promptMemberID();
-
-                // Use MemberDAO to validate and retrieve member
-                Member member = MemberDAO.findById(id);
-
-                if (member != null) {
-                    payment.setDiscount(AppConfig.getMemberDiscount()); 
-                    orderView.displaySuccess("Welcome back, " + member.getName() + "!");
-                    return member;
-                } else {
-                    orderView.displayError("Invalid Member ID. Please try again.");
-                }
-
-            } else {
-                orderView.displayError("Invalid selection. Please enter 1 or 2.");
-            }
+                displayCartMenu(isAdmin);
         }
     }
 
@@ -156,77 +152,60 @@ public class OrderController {
         Cart cart = cartController.getCart();
         Payment payment = new Payment(cart);
 
-        // Updated: handleMemberLogin now returns Member
-        Member member = handleMemberLogin(payment);
+        // Use MemberService (SRP)
+        Member member = memberService.handleMemberLogin(payment);
 
-        orderView.displayPaymentSummary(member, payment, cart.calculateSubtotal());
+        orderView.displayPaymentSummary(member, payment, cart.calculateSubtotal(), cart);
 
-        double total = payment.calTotal();
-        boolean paid = handlePaymentTransaction(payment, total, member);
+        double total = payment.calculateTotal();
+
+        // Use PaymentService (SRP)
+        boolean paid = paymentService.processPayment(payment, total, member, cart, cart.calculateSubtotal());
 
         if (paid) {
-            updateStock();
+            saveOrderToDatabase(cart, payment, member);
+
+            // Use InventoryService (SRP)
+            inventoryService.updateStock(cart);
+
             cartController.clearCart();
             orderView.pause();
-            if (isAdmin)
-                MainMenu.AdminMenu();
-            else
-                MainMenu.StaffMenu();
+            navigateToMenu(isAdmin);
         }
     }
 
-    private boolean handlePaymentTransaction(Payment payment, double total, Member member) {
-        while (true) {
-            int method = orderView.promptPaymentMethod();
+    private void saveOrderToDatabase(Cart cart, Payment payment, Member member) {
+        Order order = new Order();
+        order.setOrderID(OrderDAO.getNextID());
+        order.setInvoiceNo(new Receipt().getInvoiceID());
+        order.setMemberID(member.getID());
+        order.setCashierID(MainMenu.getCashierID());
+        order.setSubtotal(cart.calculateSubtotal());
+        order.setDiscountAmount(payment.calculateDiscount());
+        order.setTaxAmount(payment.calculateTax());
+        order.setGrandTotal(payment.calculateTotal());
+        order.setPaymentMethod(payment.getPaymentMethod());
 
-            if (method == 1) { // CASH
-                Payment cashPayment = new Cash(cart);
-                double money = orderView.promptCashAmount();
+        for (CartItem cartItem : cart.getCartList()) {
+            OrderItem orderItem = new OrderItem(
+                    cartItem.getProduct().getProductID(),
+                    cartItem.getQuantity()
+            );
+            order.addOrderItem(orderItem);
+        }
 
-                if (money >= total) {
-                    ((Cash) cashPayment).setAmount(money);
-                    double change = ((Cash) cashPayment).change(total);
-
-                    // Show Receipt
-                    Receipt receipt = new Receipt();
-                    orderView.displayReceipt(receipt, cart, payment, member, MainMenu.getCashierID(), change, "Cash");
-                    return true;
-                } else {
-                    orderView.displayError("Insufficient amount!");
-                }
-            } else if (method == 2) { // CARD
-                Payment cardPayment = new Card(cart);
-                String cardNo = orderView.promptCardNumber();
-
-                if (((Card) cardPayment).isValidCardNumber(cardNo)) {
-                    String cvv = orderView.promptCVV();
-                    if (((Card) cardPayment).isValidCVV(cvv)) {
-                        // Show Receipt (Change is 0 for card)
-                        Receipt receipt = new Receipt();
-                        orderView.displayReceipt(receipt, cart, payment, member, MainMenu.getCashierID(), 0.0, "Card");
-                        return true;
-                    } else {
-                        orderView.displayError("Invalid CVV.");
-                    }
-                } else {
-                    orderView.displayError("Invalid Card Number.");
-                }
-            }
+        if (OrderDAO.insert(order)) {
+            orderView.displaySuccess("Order saved successfully!");
+        } else {
+            orderView.displayError("Failed to save order.");
         }
     }
 
-    private void updateStock() {
-        // Iterate through cart and update database
-        for (CartItem item : cart.getCartlist()) {
-            Product prod = item.getCartProd();
-            int purchasedQty = item.getQuantity();
-            int currentStock = prod.getQuantity();
-
-            prod.setQuantity(currentStock - purchasedQty);
-
-            // Calls the Database DAO
-            ProductDAO.update(prod);
+    private void navigateToMenu(boolean isAdmin) {
+        if (isAdmin) {
+            MainMenu.AdminMenu();
+        } else {
+            MainMenu.StaffMenu();
         }
-        orderView.displaySuccess("Stock updated successfully.");
     }
 }

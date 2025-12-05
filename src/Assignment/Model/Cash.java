@@ -33,7 +33,7 @@ public class Cash extends Payment {
 
     public boolean validateAmount(double money) {
         boolean isValid = false;
-        if (money >= calTotal()) {
+        if (money >= calculateTotal()) {
            
             isValid = true;
 
