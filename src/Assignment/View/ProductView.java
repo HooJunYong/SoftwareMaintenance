@@ -13,15 +13,23 @@ public class ProductView {
         this.scan = new Scanner(System.in);
     }
 
-    public void displayProductTable(ArrayList<Product> products) {
-        System.out.println("==================================================================================================");
-        System.out.printf("|%-4s %-17s %-29s %-15s %-13s %s|%n", "No.", "Product ID", "Product Name", "Price", "Quantity", "Warranty Year");
-        System.out.println("==================================================================================================");
+     public void displayProductTable(ArrayList<Product> products) {
+        System.out.println("==============================================================================================");
+        System.out.printf("| %-3s | %-12s | %-25s | %-12s | %-10s | %-13s |%n", 
+            "No.", "Product ID", "Product Name", "Price", "Quantity", "Warranty Year");
+        System.out.println("==============================================================================================");
         
         for (int i = 0; i < products.size(); i++) {
-            System.out.printf("|%-4d %s|%n", (i + 1), products.get(i).toString());
+            Product p = products.get(i);
+            System.out.printf("| %-3d | %-12s | %-25s | RM %-9.2f | %-10d | %-13d |%n", 
+                (i + 1), 
+                p.getProductID(), 
+                p.getProductName(), 
+                p.getPrice(), 
+                p.getQuantity(),
+                p.getWarrantyYear());
         }
-        System.out.println("==================================================================================================");
+        System.out.println("==============================================================================================");
     }
 
     public int getProductSelection(int maxOption) {

@@ -13,7 +13,7 @@ public class CartView {
         this.scan = new Scanner(System.in);
     }
 
-    public void displayCartTable(Cart cart) {
+     public void displayCartTable(Cart cart) {
         if (cart.isEmpty()) {
             System.out.println("\n========================================");
             System.out.println("|           Cart is Empty              |");
@@ -22,17 +22,23 @@ public class CartView {
         }
 
         System.out.println("\n============================================================================================");
-        System.out.printf("|%-4s %-17s %-29s %-15s %-13s %s|%n", 
+        System.out.printf("| %-3s | %-12s | %-25s | %-12s | %-10s | %-11s |%n", 
                 "No.", "Product ID", "Product Name", "Price", "Quantity", "Total");
         System.out.println("============================================================================================");
 
         int index = 1;
         for (CartItem item : cart.getCartList()) {
-            System.out.printf("|%-4d %s|%n", index++, item.toString());
+            System.out.printf("| %-3d | %-12s | %-25s | RM %-9.2f | %-10d | RM %-8.2f |%n", 
+                index++, 
+                item.getProduct().getProductID(),
+                item.getProduct().getProductName(),
+                item.getProduct().getPrice(),
+                item.getQuantity(),
+                item.calculateItemTotal());
         }
 
         System.out.println("============================================================================================");
-        System.out.printf("|%79s: RM%-10.2f|%n", "Subtotal", cart.calculateSubtotal());
+        System.out.printf("| %74s | RM %-8.2f |%n", "Subtotal", cart.calculateSubtotal());
         System.out.println("============================================================================================");
     }
 

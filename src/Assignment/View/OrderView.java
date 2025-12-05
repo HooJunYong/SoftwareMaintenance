@@ -31,7 +31,6 @@ public class OrderView {
         }
     }
 
-
     public char promptConfirmOrder() {
         System.out.print("\nConfirm To Make Order? (Y = Yes / N = No): ");
         String input = scan.nextLine().toUpperCase();
@@ -45,7 +44,6 @@ public class OrderView {
     }
 
     // --- Payment Views ---
-
     public int promptMemberType() {
         System.out.println("\n----------------------");
         System.out.println("|      CUSTOMER TYPE |");
@@ -66,29 +64,32 @@ public class OrderView {
     }
 
     public void displayPaymentSummary(Member member, Payment payment, double subtotal, Cart cart) {
-        System.out.println("-------------------------------------------------------");
-        System.out.printf("| Member ID       : %30s    |\n", member.getID());
-        System.out.println("-------------------------------------------------------");
-        System.out.printf("| %-4s %-25s %-8s %-4s %-10s |\n", "No.", "Product", "Price", "Qty", "Total");
-        System.out.println("-------------------------------------------------------");
-        
+        System.out.println("\n================================================================");
+        System.out.println("|                         Checkout                             |");
+        System.out.println("================================================================");
+        System.out.println("----------------------------------------------------------------");
+        System.out.printf("| Member ID       : %39s    |\n", member.getID());
+        System.out.println("----------------------------------------------------------------");
+        System.out.printf("| %-4s %-25s %-12s %-8s %-7s |\n", "No.", "Product", "Price", "Qty", "Total");
+        System.out.println("----------------------------------------------------------------");
+
         int no = 1;
-        for(CartItem item : cart.getCartList()) {
-            System.out.printf("| %-4d %-25s RM%-6.2f %-4d RM%-8.2f |\n", 
-                no++, 
-                item.getProduct().getProductName(), 
-                item.getProduct().getPrice(), 
-                item.getQuantity(), 
-                (item.getProduct().getPrice() * item.getQuantity()));
+        for (CartItem item : cart.getCartList()) {
+            System.out.printf("| %-4d %-25s RM%-10.2f %-8d RM%-4.2f|\n",
+                    no++,
+                    item.getProduct().getProductName(),
+                    item.getProduct().getPrice(),
+                    item.getQuantity(),
+                    (item.getProduct().getPrice() * item.getQuantity()));
         }
-        
-        System.out.println("-------------------------------------------------------");
-        System.out.printf("| Subtotal        : RM %29.2f |\n", subtotal);
-        System.out.printf("| Tax Amount      : RM %29.2f |\n", payment.calculateTax());
-        System.out.printf("| Member Discount : RM -%29.2f |\n", payment.calculateDiscount());
-        System.out.println("-------------------------------------------------------");
-        System.out.printf("| GRAND TOTAL     : RM %29.2f |\n", payment.calculateTotal());
-        System.out.println("-------------------------------------------------------");
+
+        System.out.println("----------------------------------------------------------------");
+        System.out.printf("| Subtotal        : RM %40.2f|\n", subtotal);
+        System.out.printf("| Tax Amount      : RM %40.2f|\n", payment.calculateTax());
+        System.out.printf("| Member Discount : RM -%39.2f|\n", payment.calculateDiscount());
+        System.out.println("----------------------------------------------------------------");
+        System.out.printf("| GRAND TOTAL     : RM %40.2f|\n", payment.calculateTotal());
+        System.out.println("----------------------------------------------------------------");
     }
 
     public int promptPaymentMethod() {
@@ -125,62 +126,66 @@ public class OrderView {
     public void displayError(String msg) {
         System.out.println("Error: " + msg);
     }
-    
+
     public void displaySuccess(String msg) {
         System.out.println();
         System.out.println("Success: " + msg);
     }
-    
+
     public void pause() {
         System.out.println("Press Enter to continue...");
         scan.nextLine();
     }
-    
-     public char promptReceiptConfirmation() {
+
+    public char promptReceiptConfirmation() {
         System.out.print("Would you like to generate a receipt? (Y/N): ");
         String input = scan.nextLine().toUpperCase();
         return input.isEmpty() ? 'N' : input.charAt(0);
     }
-    
+
     // Using the models to print the receipt data
-   public void displayReceipt(ReceiptData data) {
-        System.out.println("\n=======================================================");
-        System.out.println("|                      RECEIPT                        |");
-        System.out.println("=======================================================");
-        System.out.printf("| Invoice No    : %-36s |\n", data.getInvoiceID());
-        System.out.printf("| Date/Time     : %-36s |\n", data.getCreatedDateTime());
-        System.out.printf("| Cashier ID    : %-36s |\n", data.getCashierID());
-        System.out.printf("| Member ID     : %-36s |\n", data.getMember().getID());
-        System.out.println("-------------------------------------------------------");
-        System.out.printf("| %-4s %-20s %8s %5s %10s |\n", "No.", "Product", "Price", "Qty", "Total");
-        System.out.println("-------------------------------------------------------");
+    public void displayReceipt(ReceiptData data) {
+
+        System.out.println();
+        System.out.println("============================================================");
+        System.out.println("|                        RECEIPT                           |");
+        System.out.println("============================================================");
+        System.out.printf("| Invoice No     : %-39s |\n", data.getInvoiceID());
+        System.out.printf("| Date/Time      : %-39s |\n", data.getCreatedDateTime());
+        System.out.printf("| Cashier ID     : %-39s |\n", data.getCashierID());
+        System.out.printf("| Member ID      : %-39s |\n", data.getMember().getID());
+        System.out.println("------------------------------------------------------------");
+        System.out.printf("| %-3s | %-20s | %-9s | %-3s | %-9s |\n",
+                "No.", "Product", "Price", "Qty", "Total");
+        System.out.println("------------------------------------------------------------");
 
         int no = 1;
         for (CartItem item : data.getCart().getCartList()) {
-            System.out.printf("| %-4d %-20s RM%6.2f %5d RM%8.2f |\n",
-                no++,
-                item.getProduct().getProductName(),
-                item.getProduct().getPrice(),
-                item.getQuantity(),
-                item.calculateItemTotal());
+            System.out.printf("| %-3d | %-20s | RM %-6.2f | %-3d | RM %-6.2f |\n",
+                    no++,
+                    item.getProduct().getProductName(),
+                    item.getProduct().getPrice(),
+                    item.getQuantity(),
+                    item.calculateItemTotal()
+            );
         }
 
-        System.out.println("-------------------------------------------------------");
-        System.out.printf("| Subtotal        : RM %29.2f |\n", data.getSubtotal());
-        System.out.printf("| Tax             : RM %29.2f |\n", data.getPayment().calculateTax());
-        System.out.printf("| Discount        : -RM %29.2f |\n", data.getPayment().calculateDiscount());
-        System.out.println("-------------------------------------------------------");
-        System.out.printf("| GRAND TOTAL     : RM %29.2f |\n", data.getPayment().calculateTotal());
-         System.out.printf("| Payment Method  : %-33s |\n", data.getPaymentMethod());
-        System.out.printf("| Amount Paid     : RM %29.2f |\n", data.getMoney());  
-        if (data.getChange() > 0) {
-            System.out.printf("| Change          : RM %29.2f |\n", data.getChange());
-        }else{
-            System.out.printf("| Change          : RM %29.2f |\n", 0.00);
-        }
-        System.out.println("=======================================================");
-        System.out.println("|              Thank you for shopping!                |");
-        System.out.println("=======================================================\n");
+        System.out.println("------------------------------------------------------------");
+        System.out.printf("| Subtotal         : RM %34.2f |\n", data.getSubtotal());
+        System.out.printf("| Tax              : RM %34.2f |\n", data.getPayment().calculateTax());
+        System.out.printf("| Discount         : RM -%33.2f |\n", data.getPayment().calculateDiscount());
+        System.out.println("------------------------------------------------------------");
+        System.out.printf("| GRAND TOTAL      : RM %34.2f |\n", data.getPayment().calculateTotal());
+        System.out.printf("| Payment Method   : %37s |\n", data.getPaymentMethod());
+        System.out.printf("| Amount Paid      : RM %34.2f |\n", data.getMoney());
+
+        double change = data.getChange() > 0 ? data.getChange() : 0.00;
+        System.out.printf("| Change           : RM %34.2f |\n", change);
+
+        System.out.println("============================================================");
+        System.out.println("|                Thank you for shopping!                   |");
+        System.out.println("============================================================");
+        System.out.println();
     }
 
 }
