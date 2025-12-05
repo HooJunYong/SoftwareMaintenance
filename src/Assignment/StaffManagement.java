@@ -10,6 +10,8 @@ import java.util.Scanner;
 import Assignment.Model.Member;
 import Assignment.Model.Person;
 import Assignment.Model.Staff;
+import Assignment.Model.Admin;
+import Assignment.Model.PersonDAO;
 
 /**
  *
@@ -17,20 +19,7 @@ import Assignment.Model.Staff;
  */
 public class StaffManagement {
 
-    public static void DisplayLogo() {
-        String logo
-                = " _______        _        _____           _            _   \n"
-                + "|__   __|      | |      / ____|         | |          | |  \n"
-                + "   | | ___  ___| |__   | |  __  __ _  __| | __ _  ___| |_ \n"
-                + "   | |/ _ \\/ __| '_ \\  | | |_ |/ _` |/ _` |/ _` |/ _ \\ __|\n"
-                + "   | |  __/ (__| | | | | |__| | (_| | (_| | (_| |  __/ |_ \n"
-                + "   |_|\\___|\\___|_| |_|  \\_____ |\\__,_|\\__,_|\\__, |\\___|\\__|\n"
-                + "                                            __/ |         \n"
-                + "                                           |___/          ";
-
-        System.out.println(logo);
-    }
-
+   
     public static void Login() {
         String inputID;
         String pass;
@@ -38,7 +27,7 @@ public class StaffManagement {
         int valid = 0;
         MainMenu menu = new MainMenu();
         Scanner sc = new Scanner(System.in);
-        ArrayList<Person> data = Person.read();
+        ArrayList<Person> data = PersonDAO.readAll();
 
         System.out.println("==========================");
         System.out.println("|         LOGIN          |");

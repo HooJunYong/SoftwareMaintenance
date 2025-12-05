@@ -68,21 +68,6 @@ public class Staff extends Person {
         this.email = email;
     }
 
-    @Override
-    public boolean validateID(String tempID) {
-        boolean valid = false;
-        ArrayList<Person> data = Person.read();
-
-        for (Person person : data) {
-            if (person instanceof Staff && person.getID().equals(tempID)) {
-                valid = true;
-                break;
-            }
-        }
-
-        return valid;
-    }
-
     public boolean validatePassword(String password) {
         return this.password.equals(password);
     }

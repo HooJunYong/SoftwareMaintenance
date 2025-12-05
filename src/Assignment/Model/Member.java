@@ -1,53 +1,23 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Assignment.Model;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Scanner;
-
-/**
- *
- * @author User
- */
 public class Member extends Person {
 
     public Member() {
+        super();
     }
 
-    public Member(String ID, String name, String email, String phoneNo) {
-        super(ID, name, email, phoneNo);
+    public Member(String id, String name, String email, String phoneNo) {
+        super(id, name, email, phoneNo);
     }
 
-    @Override
-    public boolean validateID(String tempID) {
-        boolean valid = false;
-        ArrayList<Person> data = Person.read();
-
-        for (Person person : data) {
-            if (person instanceof Member && person.getID().equals(tempID)) {
-                valid = true;
-                break;
-            }
-        }
-
-        return valid;
+    // Validate if member ID exists in database
+    public boolean validateID(String id) {
+        return MemberDAO.validateMemberID(id);
     }
 
-    
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(String.format("|Member ID   : %-17s|\n", ID));
-        builder.append(String.format("|Member Name : %-17s|\n", name));
-        builder.append(String.format("|Email       : %-17s|\n", email));
-        builder.append(String.format("|Phone       : %-17s|\n", phoneNo));
-        return builder.toString();
+        return String.format("%-10s %-20s %-30s %-15s",
+                getID(), getName(), getEmail(), getPhoneNo());
     }
-
 }
