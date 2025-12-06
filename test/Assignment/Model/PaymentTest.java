@@ -1,18 +1,19 @@
 package Assignment.Model;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PaymentTest {
-
     private Cart cart;
     private Payment payment;
     private Product product1;
     private Product product2;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         // Create test products
         product1 = new Product();
         product1.setProductID("P001");
@@ -37,7 +38,8 @@ public class PaymentTest {
     }
 
     @Test
-    public void testCalculateTotalWithoutDiscount() {
+    @DisplayName("Calculate total without discount")
+    void testCalculateTotalWithoutDiscount() {
         // Arrange
         payment.setDiscount(0.0);  // No discount
         
@@ -50,11 +52,12 @@ public class PaymentTest {
         double expectedTax = expectedSubtotal * 0.06;  // Assuming 6% tax
         double expectedTotal = expectedSubtotal + expectedTax;
         
-        assertEquals(expectedTotal, total, 0.01);
+        assertEquals(expectedTotal, total, 0.01, "Total should be subtotal + tax");
     }
 
     @Test
-    public void testCalculateTotalWithMemberDiscount() {
+    @DisplayName("Calculate total with 10% member discount")
+    void testCalculateTotalWithMemberDiscount() {
         // Arrange
         payment.setDiscount(0.10);  // 10% member discount
         
@@ -73,11 +76,12 @@ public class PaymentTest {
         double tax = afterDiscount * 0.06;
         double expectedTotal = afterDiscount + tax;
         
-        assertEquals(expectedTotal, total, 0.01);
+        assertEquals(expectedTotal, total, 0.01, "Total should include member discount");
     }
 
-    @Test
-    public void testCalculateDiscount() {
+     @Test
+    @DisplayName("Calculate discount amount")
+    void testCalculateDiscount() {
         // Arrange
         payment.setDiscount(0.10);  // 10% discount
         
@@ -86,11 +90,12 @@ public class PaymentTest {
         
         // Assert
         // Subtotal = 350, Discount = 350 * 0.10 = 35
-        assertEquals(35.00, discountAmount, 0.01);
+        assertEquals(35.00, discountAmount, 0.01, "Discount should be 10% of subtotal");
     }
 
     @Test
-    public void testCalculateTax() {
+    @DisplayName("Calculate tax amount")
+    void testCalculateTax() {
         // Arrange
         payment.setDiscount(0.0);  // No discount
         
@@ -99,11 +104,12 @@ public class PaymentTest {
         
         // Assert
         // Subtotal = 350, Tax = 350 * 0.06 = 21
-        assertEquals(21.00, taxAmount, 0.01);
+        assertEquals(21.00, taxAmount, 0.01, "Tax should be 6% of subtotal");
     }
 
     @Test
-    public void testCalculateTaxAfterDiscount() {
+    @DisplayName("Calculate tax with discount applied")
+    void testCalculateTaxAfterDiscount() {
         // Arrange
         payment.setDiscount(0.10);  // 10% discount
         
@@ -113,11 +119,12 @@ public class PaymentTest {
         // Assert
         // Subtotal = 350, Discount = 35, After discount = 315
         // Tax = 315 * 0.06 = 18.90
-        assertEquals(18.90, taxAmount, 0.01);
+        assertEquals(18.90, taxAmount, 0.01, "Tax should be calculated after discount");
     }
 
     @Test
-    public void testEmptyCartTotal() {
+    @DisplayName("Empty cart should return zero total")
+    void testEmptyCartTotal() {
         // Arrange
         Cart emptyCart = new Cart();
         Payment emptyPayment = new Payment(emptyCart);
@@ -126,6 +133,6 @@ public class PaymentTest {
         double total = emptyPayment.calculateTotal();
         
         // Assert
-        assertEquals(0.00, total, 0.01);
+        assertEquals(0.00, total, 0.01, "Empty cart should have zero total");
     }
 }
