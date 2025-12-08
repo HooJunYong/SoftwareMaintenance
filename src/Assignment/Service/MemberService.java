@@ -2,17 +2,24 @@ package Assignment.Service;
 
 import Assignment.Config.AppConfig;
 import Assignment.Model.Member;
-import Assignment.Model.MemberDAO;
 import Assignment.Model.Payment;
+import Assignment.Model.MemberDAO;
 import Assignment.View.OrderView;
-
 
 public class MemberService implements MemberServiceInterface {
 
     private OrderView orderView;
+    private MemberDAO memberDAO;
 
-    public MemberService(OrderView orderView) {
+    // Constructor with dependency injection (for testing)
+    public MemberService(OrderView orderView, MemberDAO memberDAO) {
         this.orderView = orderView;
+        this.memberDAO = memberDAO;
+    }
+
+    // Default constructor (for production)
+    public MemberService(OrderView orderView) {
+        this(orderView, new MemberDAO());
     }
 
     @Override
@@ -33,7 +40,8 @@ public class MemberService implements MemberServiceInterface {
         }
     }
 
-    private Member createNonMember(Payment payment) {
+    // Changed to package-private for testing
+    Member createNonMember(Payment payment) {
         Member nonMember = new Member();
         nonMember.setID("-");
         nonMember.setName("Walk-in Customer");
@@ -41,9 +49,9 @@ public class MemberService implements MemberServiceInterface {
         return nonMember;
     }
 
-    private Member validateMember(Payment payment) {
-        String id = orderView.promptMemberID();
-        Member member = MemberDAO.findById(id);
+    // Changed to package-private for testing
+    Member validateMember(Payment payment, String memberId) {
+        Member member = memberDAO.findById(memberId);
 
         if (member != null) {
             payment.setDiscount(AppConfig.getMemberDiscount());
@@ -52,5 +60,10 @@ public class MemberService implements MemberServiceInterface {
             orderView.displayError("Invalid Member ID. Please try again.");
             return null;
         }
+    }
+
+    private Member validateMember(Payment payment) {
+        String id = orderView.promptMemberID();
+        return validateMember(payment, id);
     }
 }

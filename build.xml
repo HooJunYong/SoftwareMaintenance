@@ -11,6 +11,12 @@
     <description>Builds, tests, and runs the project FINAL.</description>
     <import file="nbproject/build-impl.xml"/>
 
+    <!-- Define build directories (use hardcoded paths to avoid variable resolution issues) -->
+    <property name="build.dir.local" value="build"/>
+    <property name="build.classes.local" value="build/classes"/>
+    <property name="build.test.classes.local" value="build/test/classes"/>
+    <property name="src.dir.local" value="src"/>
+
     <path id="classpath">
         <fileset dir="lib">
             <include name="mysql-connector-j-9.5.0.jar"/>
@@ -18,6 +24,136 @@
             <include name="hamcrest-core-1.3.jar"/>
         </fileset>
     </path>
+
+    <!-- ==================== JaCoCo Coverage Configuration ==================== -->
+    
+    <!-- Define JaCoCo Ant tasks -->
+    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+        <classpath>
+            <fileset dir="lib">
+               <include name="org.jacoco.ant-0.8.14.jar"/>
+                <include name="org.jacoco.agent-0.8.14.jar"/>
+                <include name="org.jacoco.core-0.8.14.jar"/>
+                <include name="org.jacoco.report-0.8.14.jar"/>
+                <include name="asm-9.7.1.jar"/>
+                <include name="asm-tree-9.7.1.jar"/>
+                <include name="asm-commons-9.7.1.jar"/>
+            </fileset>
+        </classpath>
+    </taskdef>
+
+    <!-- JaCoCo paths -->
+    <property name="jacoco.report.dir" value="build/coverage"/>
+    <property name="jacoco.exec.file" value="build/jacoco.exec"/>
+
+    <!-- Test classpath including all required JARs -->
+    <path id="test.classpath">
+        <pathelement location="build/classes"/>
+        <pathelement location="build/test/classes"/>
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <!-- Run tests with JaCoCo coverage -->
+    <target name="test-coverage" depends="compile,compile-test" 
+            description="Run tests with JaCoCo code coverage">
+        
+        <!-- Clean previous coverage data -->
+        <delete file="${jacoco.exec.file}"/>
+        <mkdir dir="${jacoco.report.dir}"/>
+
+        <!-- Run tests with JaCoCo agent -->
+        <jacoco:coverage xmlns:jacoco="antlib:org.jacoco.ant" destfile="${jacoco.exec.file}">
+            <java classname="org.junit.platform.console.ConsoleLauncher" 
+                  fork="true" failonerror="false" resultproperty="test.result">
+                <classpath refid="test.classpath"/>
+                <arg value="--scan-class-path"/>
+            </java>
+        </jacoco:coverage>
+
+        <echo message="Tests completed. Generating coverage report..."/>
+    </target>
+
+    <!-- Generate HTML coverage report -->
+    <target name="coverage-report" depends="test-coverage" 
+            description="Generate JaCoCo HTML coverage report">
+        
+        <jacoco:report xmlns:jacoco="antlib:org.jacoco.ant">
+            <executiondata>
+                <file file="${jacoco.exec.file}"/>
+            </executiondata>
+
+            <structure name="FINAL Coverage Report">
+                <classfiles>
+                    <fileset dir="${build.classes.dir}">
+                        <include name="**/*.class"/>
+                        <exclude name="**/MainMenu.class"/>
+                        <exclude name="**/*DAO.class"/>
+                        <exclude name="**/DBTest.class"/>
+                        <exclude name="**/*View.class"/>
+                    </fileset>
+                </classfiles>
+                <sourcefiles encoding="UTF-8">
+                    <fileset dir="${src.dir}"/>
+                </sourcefiles>
+            </structure>
+
+            <html destdir="${jacoco.report.dir}/html"/>
+            <csv destfile="${jacoco.report.dir}/coverage.csv"/>
+            <xml destfile="${jacoco.report.dir}/coverage.xml"/>
+        </jacoco:report>
+
+        <echo message=""/>
+        <echo message="========================================"/>
+        <echo message="Coverage report generated!"/>
+        <echo message="Open: ${jacoco.report.dir}/html/index.html"/>
+        <echo message="========================================"/>
+    </target>
+
+    <!-- Run integration tests with coverage -->
+    <target name="test-integration-coverage" depends="compile,compile-test" 
+            description="Run integration tests with coverage">
+        
+        <delete file="${jacoco.exec.file}"/>
+        <mkdir dir="${jacoco.report.dir}"/>
+
+        <jacoco:coverage xmlns:jacoco="antlib:org.jacoco.ant" destfile="${jacoco.exec.file}">
+            <java classname="org.junit.platform.console.ConsoleLauncher" 
+                  fork="true" failonerror="false">
+                <classpath refid="test.classpath"/>
+                <arg value="--scan-class-path"/>
+                <arg value="--class-path"/>
+                <arg value="${build.test.classes.dir}"/>
+                <arg value="--include-tag"/>
+                <arg value="integration"/>
+            </java>
+        </jacoco:coverage>
+    </target>
+
+    <!-- Run all tests (unit + integration) with coverage -->
+    <target name="test-all-coverage" depends="compile,compile-test" 
+            description="Run all tests with coverage">
+        
+        <delete file="${jacoco.exec.file}"/>
+        <mkdir dir="${jacoco.report.dir}"/>
+
+        <jacoco:coverage xmlns:jacoco="antlib:org.jacoco.ant" destfile="${jacoco.exec.file}">
+            <java classname="org.junit.platform.console.ConsoleLauncher" 
+                  fork="true" failonerror="false">
+                <classpath refid="test.classpath"/>
+                <arg value="--scan-class-path"/>
+                <arg value="--class-path"/>
+                <arg value="${build.test.classes.dir}"/>
+            </java>
+        </jacoco:coverage>
+    </target>
+
+    <!-- Quick coverage: run tests and generate report -->
+    <target name="coverage" depends="coverage-report" 
+            description="Run tests and generate coverage report">
+        <echo message="Coverage analysis complete!"/>
+    </target>
 
     <!--
 

@@ -3,14 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/yutic/Documents/NetBeansProjects/DFT2(G1)-YuTickSang-IvanPekYuHeng-HooJunYong/src/Assignment/MainMenu.java</file>
-            <file>file:/C:/Users/yutic/Documents/NetBeansProjects/DFT2(G1)-YuTickSang-IvanPekYuHeng-HooJunYong/src/Assignment/Staff.java</file>
-            <file>file:/C:/Users/yutic/Documents/NetBeansProjects/DFT2(G1)-YuTickSang-IvanPekYuHeng-HooJunYong/src/Assignment/Product.java</file>
-            <file>file:/C:/Users/yutic/Documents/NetBeansProjects/DFT2(G1)-YuTickSang-IvanPekYuHeng-HooJunYong/src/Assignment/StaffManagement.java</file>
-            <file>file:/C:/Users/yutic/Documents/NetBeansProjects/DFT2(G1)-YuTickSang-IvanPekYuHeng-HooJunYong/src/Assignment/Person.java</file>
-            <file>file:/C:/Users/yutic/Documents/NetBeansProjects/DFT2(G1)-YuTickSang-IvanPekYuHeng-HooJunYong/src/Assignment/Member.java</file>
-            <file>file:/C:/Users/yutic/Documents/NetBeansProjects/DFT2(G1)-YuTickSang-IvanPekYuHeng-HooJunYong/src/Assignment/MemberManagement.java</file>
-            <file>file:/C:/Users/yutic/Documents/NetBeansProjects/DFT2(G1)-YuTickSang-IvanPekYuHeng-HooJunYong/src/Assignment/Admin.java</file>
+            <file>file:/C:/Users/yutic/Documents/GitHub/SoftwareMaintenance/src/Assignment/Model/MemberDAO.java</file>
+            <file>file:/C:/Users/yutic/Documents/GitHub/SoftwareMaintenance/src/Assignment/Model/MemberDAOImpl.java</file>
+            <file>file:/C:/Users/yutic/Documents/GitHub/SoftwareMaintenance/test/Assignment/Service/MemberServiceTest.java</file>
+            <file>file:/C:/Users/yutic/Documents/GitHub/SoftwareMaintenance/test/Assignment/Model/PaymentTest.java</file>
         </group>
     </open-files>
 </project-private>

@@ -45,12 +45,13 @@ public class ProductDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                String productId = rs.getString("productID");
                 String name = rs.getString("productName");
                 Double price = rs.getDouble("price");
                 Integer quantity = rs.getInt("quantity");
                 Integer warranty = rs.getInt("warrantyYear");
 
-                product = new Product(name, price, quantity, warranty);
+                product = new Product(productId, name, price, quantity, warranty);
             }
         } catch (Exception e) {
             e.printStackTrace();

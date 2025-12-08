@@ -1,12 +1,12 @@
 package Assignment.Model;
 
-import org.junit.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PaymentTest {
+
     private Cart cart;
     private Payment payment;
     private Product product1;
@@ -79,7 +79,7 @@ public class PaymentTest {
         assertEquals(expectedTotal, total, 0.01, "Total should include member discount");
     }
 
-     @Test
+    @Test
     @DisplayName("Calculate discount amount")
     void testCalculateDiscount() {
         // Arrange
