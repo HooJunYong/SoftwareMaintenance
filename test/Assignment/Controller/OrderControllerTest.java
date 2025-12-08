@@ -140,6 +140,58 @@ public class OrderControllerTest {
     }
 
     @Test
+    @DisplayName("Cart menu option 2 edits item quantity")
+    void testCartMenuEditQuantity() {
+        // Arrange
+        Product product = new Product();
+        product.setProductID("P001");
+        product.setProductName("Test");
+        product.setPrice(100.0);
+        cart.addItem(new CartItem(product, 1));
+
+        when(orderView.displayOrderMenu())
+                .thenReturn(2)  // View cart
+                .thenReturn(3); // Exit
+        when(cartView.displayCartMenu())
+                .thenReturn(2)  // Edit quantity
+                .thenReturn(6); // Cancel
+
+        try (MockedStatic<Assignment.MainMenu> mainMenu = mockStatic(Assignment.MainMenu.class)) {
+            // Act
+            orderController.startOrderProcess(false);
+
+            // Assert
+            verify(cartController).editItemQuantity();
+        }
+    }
+
+    @Test
+    @DisplayName("Cart menu option 3 removes item")
+    void testCartMenuRemoveItem() {
+        // Arrange
+        Product product = new Product();
+        product.setProductID("P001");
+        product.setProductName("Test");
+        product.setPrice(100.0);
+        cart.addItem(new CartItem(product, 1));
+
+        when(orderView.displayOrderMenu())
+                .thenReturn(2)  // View cart
+                .thenReturn(3); // Exit
+        when(cartView.displayCartMenu())
+                .thenReturn(3)  // Remove item
+                .thenReturn(6); // Cancel
+
+        try (MockedStatic<Assignment.MainMenu> mainMenu = mockStatic(Assignment.MainMenu.class)) {
+            // Act
+            orderController.startOrderProcess(false);
+
+            // Assert
+            verify(cartController).removeItem();
+        }
+    }
+
+    @Test
     @DisplayName("Cart menu option 4 clears cart")
     void testCartMenuClearCart() {
         // Arrange
