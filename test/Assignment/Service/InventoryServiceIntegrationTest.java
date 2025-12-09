@@ -84,4 +84,14 @@ public class InventoryServiceIntegrationTest {
         product2.setQuantity(originalQty2);
         ProductDAO.update(product2);
     }
+
+    @Test
+    @DisplayName("hasEnoughStock returns true when stock equals requested quantity")
+    void testHasEnoughStockExactQuantity() {
+        Product product = new Product();
+        product.setQuantity(5);
+        
+        assertTrue(inventoryService.hasEnoughStock(product, 5));
+    }
+
 }
