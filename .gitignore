@@ -111,3 +111,4 @@ $RECYCLE.BIN/
 
 # Keep empty directories
 !.gitkeep
+nbproject/project.properties
